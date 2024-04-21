@@ -1,4 +1,5 @@
 
+import { SignInButton, SignedIn, SignedOut } from "@clerk/nextjs";
 import { db } from "~/server/db";
 
 export const dynamic= "force-dynamic"
@@ -15,12 +16,12 @@ export const dynamic= "force-dynamic"
 //   url,
 // }))
 
-export default async function HomePage() {
+async function Images() {
   const images = await db.query.images.findMany({
     orderBy: (image, {desc}) => desc(image.id)
-  })
+  });
   return (
-    <main className="text-white">
+    
       <div className="flex flex-wrap gap-4 items-end">
       
         {[...images, ...images, ...images].map((image, index) => (
@@ -30,6 +31,24 @@ export default async function HomePage() {
           </div>
         ))}
       </div>
+    
+  );
+}
+
+export default async function HomePage() {
+ 
+  return (
+    <main className="text-white w-full">
+      <SignedOut>
+        <div className="w-full text-2xl h-full text-center">
+          Please sign in above
+        </div>
+      </SignedOut>
+
+      <SignedIn>
+        {/* @ts-expect-error Server Component */}
+        <Images />
+      </SignedIn>
     </main>
   );
 }
